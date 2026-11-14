@@ -1,0 +1,33 @@
+{
+  "name": "job-radar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Finds fresh SDE roles in Bangalore, Hyderabad and Pune straight from company career pages, scores them, and pings you on Telegram within minutes.",
+  "scripts": {
+    "migrate": "tsx --env-file-if-exists=.env src/scripts/migrate.ts",
+    "poll": "tsx --env-file-if-exists=.env src/poller.ts",
+    "poll:watch": "tsx --env-file-if-exists=.env src/poller.ts --watch",
+    "probe": "tsx --env-file-if-exists=.env src/scripts/probe.ts",
+    "dry-run": "tsx --env-file-if-exists=.env src/scripts/dry-run.ts",
+    "serve": "tsx --env-file-if-exists=.env src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.8",
+    "hono": "^4.13.18",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
+    "@types/node": "^26.6.6",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

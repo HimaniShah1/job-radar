@@ -1,0 +1,7 @@
+{ "name": "Acme", "jobs": [
+  { "title": "Full Stack Developer", "shortcode": "52D18CB3E4", "city": "Pune", "state": "Maharashtra", "country": "India",
+    "telecommuting": false, "published_on": "2026-11-12", "created_at": "2026-11-11",
+    "url": "https://apply.workable.com/j/52D18CB3E4", "application_url": "https://apply.workable.com/j/52D18CB3E4/apply",
+    "department": "Engineering", "description": "<p>React + Node.js</p>",
+    "locations": [{ "country": "India", "countryCode": "IN", "city": "Pune", "region": "Maharashtra" }] }
+] }

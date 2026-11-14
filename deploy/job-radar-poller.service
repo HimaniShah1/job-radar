@@ -1,0 +1,15 @@
+# /etc/systemd/system/job-radar-poller.service
+[Unit]
+Description=Job Radar poller
+After=network-online.target postgresql.service
+
+[Service]
+WorkingDirectory=/opt/job-radar
+EnvironmentFile=/opt/job-radar/.env
+ExecStart=/usr/bin/npx tsx src/poller.ts --watch
+Restart=always
+RestartSec=30
+User=radar
+
+[Install]
+WantedBy=multi-user.target

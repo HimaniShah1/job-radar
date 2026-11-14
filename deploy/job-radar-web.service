@@ -1,0 +1,14 @@
+# /etc/systemd/system/job-radar-web.service
+[Unit]
+Description=Job Radar dashboard
+After=network-online.target postgresql.service
+
+[Service]
+WorkingDirectory=/opt/job-radar
+EnvironmentFile=/opt/job-radar/.env
+ExecStart=/usr/bin/npx tsx src/server.ts
+Restart=always
+User=radar
+
+[Install]
+WantedBy=multi-user.target

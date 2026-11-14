@@ -1,0 +1,11 @@
+[
+  { "id": "6cbbe304-e065-4711-bf3e-756795d2bc2a", "text": "SDE I", "createdAt": 1763020800000,
+    "categories": { "location": "Bangalore, India", "team": "Backend", "commitment": "Full time", "allLocations": ["Bangalore, India", "Pune, Maharashtra"] },
+    "workplaceType": "onsite",
+    "hostedUrl": "https://jobs.lever.co/hevodata/6cbbe304", "applyUrl": "https://jobs.lever.co/hevodata/6cbbe304/apply",
+    "descriptionPlain": "Build connectors at scale.",
+    "lists": [{ "text": "Requirements", "content": "<li>1-3 years backend experience</li><li>Node.js or Java</li>" }],
+    "additionalPlain": "" },
+  { "id": "x2", "text": "Senior Backend Engineer - Seattle, WA", "createdAt": 1763020800000,
+    "categories": { "location": "Seattle, WA" }, "workplaceType": "hybrid", "hostedUrl": "https://jobs.lever.co/x/x2", "descriptionPlain": "" }
+]

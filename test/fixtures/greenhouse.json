@@ -1,0 +1,10 @@
+{ "jobs": [
+  { "id": 6621995003, "title": "Software Engineer II (Backend)", "updated_at": "2026-11-13T09:00:00-05:00",
+    "first_published": "2026-11-13T08:30:00-05:00",
+    "location": { "name": "Bengaluru, Karnataka, India" },
+    "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/6621995003",
+    "content": "&lt;p&gt;We need 2-4 years of experience with &lt;strong&gt;Node.js&lt;/strong&gt; &amp;amp; TypeScript and PostgreSQL.&lt;/p&gt;",
+    "departments": [{ "id": 1, "name": "Engineering" }], "offices": [{ "id": 9, "name": "Bangalore", "location": "Bengaluru, India" }] },
+  { "id": 2, "title": "Account Executive", "updated_at": "2026-11-01T00:00:00Z",
+    "location": { "name": "San Francisco, CA" }, "absolute_url": "https://example.com/2", "content": "", "departments": [], "offices": [] }
+] }

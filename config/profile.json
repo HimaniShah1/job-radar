@@ -1,0 +1,27 @@
+{
+  "cities": ["bengaluru", "hyderabad", "pune", "remote-india"],
+  "yearsOfExperience": 2,
+  "titleInclude": [
+    "software engineer", "software developer", "software development engineer", "sde", "sde-1", "sde-2", "sde1", "sde2",
+    "backend", "back-end", "back end", "full stack", "fullstack", "full-stack", "node", "nodejs", "node.js",
+    "member of technical staff", "mts", "product engineer", "web developer", "application engineer", "engineer i", "engineer ii"
+  ],
+  "titleExclude": [
+    "staff engineer", "staff software", "staff backend", "senior staff", "principal", "lead", "manager", "director", "head", "vp", "architect", "intern", "internship", "trainee",
+    "qa", "sdet", "test", "testing", "quality", "android", "ios", "mobile", "embedded", "firmware",
+    "salesforce", "sap", "servicenow", ".net", "c#", "c++", "data scientist", "machine learning", "ml engineer",
+    "sre", "site reliability", "devops", "security engineer", "support", "sales", "solution engineer", "solutions engineer",
+    "sde-3", "sde 3", "sde iii", "sde-iii", "sde3", "engineer iii", "engineer iv", "sde iv"
+  ],
+  "titlePenalty": { "senior": 15, "sr.": 15, "sr": 15, "java": 8, "golang": 8, "python": 6, "frontend": 6, "front-end": 6, "ui": 6, "founding": 5 },
+  "titleBoost": {
+    "sde-1": 15, "sde 1": 15, "sde1": 15, "sde i": 15, "sde-2": 15, "sde 2": 15, "sde2": 15, "sde ii": 15, "sde-ii": 15,
+    "engineer i": 12, "engineer ii": 12, "engineer 1": 12, "engineer 2": 12, "associate": 8, "backend": 10, "full stack": 8, "fullstack": 8, "node": 10
+  },
+  "skills": {
+    "node.js": 8, "nodejs": 8, "node": 6, "typescript": 8, "javascript": 3, "postgresql": 6, "postgres": 6, "sql": 2,
+    "react": 4, "next.js": 3, "express": 4, "nestjs": 5, "aws": 4, "s3": 1, "ec2": 1, "supabase": 3, "stripe": 3,
+    "rbac": 2, "redis": 3, "rest": 2, "microservices": 2, "docker": 2
+  },
+  "notifyThreshold": 60
+}

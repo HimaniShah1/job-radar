@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Job Radar</title>
+<style>
+  :root { --bg:#fafaf9; --card:#fff; --ink:#1c1917; --mute:#78716c; --line:#e7e5e4; --accent:#0f766e; --warn:#b45309; --bad:#b91c1c; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0c0a09; --card:#1c1917; --ink:#f5f5f4; --mute:#a8a29e; --line:#292524; --accent:#2dd4bf; --warn:#fbbf24; --bad:#f87171; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
+  header { position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--line); padding:12px 16px; z-index:1; }
+  h1 { font-size:16px; margin:0 0 8px; }
+  .stats { display:flex; gap:16px; flex-wrap:wrap; color:var(--mute); font-size:13px; }
+  .stats b { color:var(--ink); font-variant-numeric:tabular-nums; }
+  .tabs { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .tabs button, .act button, select { font:inherit; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:6px; padding:4px 10px; cursor:pointer; }
+  .tabs button[aria-pressed=true] { border-color:var(--accent); color:var(--accent); }
+  main { padding:12px 16px; display:grid; gap:10px; max-width:900px; }
+  .job { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .top { display:flex; justify-content:space-between; gap:12px; }
+  .title { font-weight:600; }
+  .title a { color:inherit; text-decoration:none; }
+  .meta, .why { color:var(--mute); font-size:13px; }
+  .score { font-weight:700; font-variant-numeric:tabular-nums; color:var(--accent); min-width:2ch; text-align:right; }
+  .score.low { color:var(--warn); }
+  .act { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; align-items:center; }
+  .act button.on { border-color:var(--accent); color:var(--accent); }
+  .fresh { color:var(--accent); font-weight:600; }
+  .err { color:var(--bad); }
+  .empty { color:var(--mute); padding:40px 0; text-align:center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Job Radar</h1>
+  <div class="stats" id="stats">Loading…</div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main id="list"></main>
+<script>
+const TABS = [['new','Inbox'],['shortlisted','Shortlist'],['applied','Applied'],['recruiter_call','Recruiter'],['oa','OA'],['interviewing','Interviewing'],['offer','Offer'],['skipped','Skipped']];
+const STATUSES = ['new','shortlisted','applied','recruiter_call','oa','interviewing','offer','rejected','ghosted','skipped'];
+let current = 'new';
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ago = (d) => { if (!d) return ''; const m = (Date.now() - new Date(d)) / 60000; return m < 60 ? `${Math.round(m)}m ago` : m < 1440 ? `${Math.round(m/60)}h ago` : `${Math.round(m/1440)}d ago`; };
+
+async function api(path, opts) {
+  const r = await fetch(path, { headers: { 'content-type': 'application/json' }, ...opts });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function renderTabs() {
+  $('#tabs').innerHTML = TABS.map(([k, l]) => `<button aria-pressed="${k === current}" data-tab="${k}">${l}</button>`).join('');
+}
+
+async function loadStats() {
+  try {
+    const s = await api('/api/stats');
+    const broken = s.sources.filter((x) => !x.ok);
+    const med = s.week.median_minutes_to_apply;
+    $('#stats').innerHTML = [
+      `New matches (7d) <b>${s.week.new_matches}</b>`,
+      `Applied (7d) <b>${s.week.applied}</b>`,
+      `Median time to apply <b>${med == null ? '–' : Math.round(med) + ' min'}</b>`,
+      `Boards <b>${s.sources.length - broken.length}/${s.sources.length}</b> healthy`,
+      broken.length ? `<span class="err" title="${esc(broken.map((b) => b.company + ': ' + b.error).join('\n'))}">${broken.length} failing</span>` : '',
+    ].filter(Boolean).join(' · ');
+  } catch (e) { $('#stats').textContent = 'Stats unavailable: ' + e.message; }
+}
+
+async function loadJobs() {
+  const rows = await api(`/api/jobs?status=${current}&limit=300`);
+  $('#list').innerHTML = rows.length ? rows.map(card).join('') : `<div class="empty">Nothing here yet.</div>`;
+}
+
+function card(j) {
+  const fresh = (Date.now() - new Date(j.first_seen_at)) < 3 * 3600_000;
+  return `<article class="job" id="job-${j.id}" data-id="${j.id}">
+    <div class="top">
+      <div>
+        <div class="title"><a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.title)}</a></div>
+        <div class="meta">${esc(j.company)} · ${esc(j.cities.join(', '))} · <span class="${fresh ? 'fresh' : ''}">seen ${ago(j.first_seen_at)}</span>${j.applied_at ? ' · applied ' + ago(j.applied_at) : ''}</div>
+      </div>
+      <div class="score ${j.score < 60 ? 'low' : ''}">${j.score}</div>
+    </div>
+    <div class="why">${esc(j.score_reasons.join(' · '))}</div>
+    <div class="act">
+      <button data-act="apply">Open & mark applied</button>
+      <button data-act="status" data-v="shortlisted">Shortlist</button>
+      <button data-act="status" data-v="skipped">Skip</button>
+      <button data-act="fb" data-v="1" class="${j.verdict === 1 ? 'on' : ''}" title="Good match">👍</button>
+      <button data-act="fb" data-v="-1" class="${j.verdict === -1 ? 'on' : ''}" title="Bad match">👎</button>
+      <select data-act="select">${STATUSES.map((s) => `<option ${s === j.status ? 'selected' : ''}>${s}</option>`).join('')}</select>
+    </div>
+  </article>`;
+}
+
+document.addEventListener('click', async (e) => {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { current = tab.dataset.tab; renderTabs(); return loadJobs(); }
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const art = btn.closest('.job'); const id = art.dataset.id;
+  if (btn.dataset.act === 'apply') {
+    window.open(art.querySelector('.title a').href, '_blank', 'noopener');
+    await api(`/api/jobs/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'applied' }) });
+  } else if (btn.dataset.act === 'status') {
+    await api(`/api/jobs/${id}`, { method: 'PATCH', body: JSON.stringify({ status: btn.dataset.v }) });
+  } else if (btn.dataset.act === 'fb') {
+    await api(`/api/jobs/${id}/feedback`, { method: 'POST', body: JSON.stringify({ verdict: Number(btn.dataset.v) }) });
+  }
+  loadJobs(); loadStats();
+});
+document.addEventListener('change', async (e) => {
+  if (e.target.dataset.act !== 'select') return;
+  const id = e.target.closest('.job').dataset.id;
+  await api(`/api/jobs/${id}`, { method: 'PATCH', body: JSON.stringify({ status: e.target.value }) });
+  loadJobs(); loadStats();
+});
+
+renderTabs(); loadStats(); loadJobs();
+setInterval(() => { loadStats(); if (current === 'new') loadJobs(); }, 120_000);
+</script>
+</body>
+</html>

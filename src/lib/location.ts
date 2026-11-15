@@ -11,6 +11,9 @@ const CITY_PATTERNS: Array<[Exclude<City, 'remote-india'>, RegExp]> = [
 ];
 
 const INDIA_WORD = /\bindia\b/i;
+/** Indian tech hubs outside the preferred three, for postings that don't say "India". */
+const OTHER_INDIAN_CITY =
+  /\b(chennai|mumbai|navi mumbai|thane|delhi|new delhi|ncr|gurgaon|gurugram|noida|greater noida|ahmedabad|gandhinagar|gift city|kolkata|kochi|cochin|trivandrum|thiruvananthapuram|coimbatore|mysore|mysuru|mangalore|mangaluru|jaipur|chandigarh|mohali|indore|bhopal|nagpur|nashik|surat|vadodara|lucknow|bhubaneswar|visakhapatnam|vizag|vijayawada|goa)\b/i;
 /** Country code only in caps, so the English word "in" ("work in any timezone") doesn't match. */
 const INDIA_CODE = /\bIN\b/;
 const INDIA = { test: (s: string) => INDIA_WORD.test(s) || INDIA_CODE.test(s) };
@@ -36,5 +39,8 @@ export function matchCities(locations: string[], remoteFlag: boolean | null = nu
   if (remoteFlag === true && listed.length > 0 && listed.every((l) => INDIA.test(l) && !OTHER_REGION.test(l))) {
     found.add('remote-india');
   }
+  // Somewhere else in India. Only the word "India" or a known city counts here, not the bare "IN"
+  // code, which also means Indiana ("Indianapolis, IN").
+  if (found.size === 0 && listed.some((l) => INDIA_WORD.test(l) || OTHER_INDIAN_CITY.test(l))) found.add('india-other');
   return [...found];
 }

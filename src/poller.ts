@@ -77,7 +77,7 @@ export async function pollOnce(db: Db): Promise<SourceResult[]> {
   const toApply = results.reduce((n, r) => n + r.toApply, 0);
   const inTarget = results.reduce((n, r) => n + r.inTarget, 0);
   console.log(
-    `[${new Date().toISOString()}] ${sources.length} sources, ${inTarget} open roles in target cities, ` +
+    `[${new Date().toISOString()}] ${sources.length} sources, ${inTarget} open roles in India, ` +
       `${toApply} new in To apply, ${failed.length} failed`,
   );
   for (const f of failed) console.log(`  ✗ ${f.company}: ${f.error}`);

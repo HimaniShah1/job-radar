@@ -18,8 +18,13 @@ describe('matchCities', () => {
     [['Remote - USA'], []],
     [['Remote'], []],
     [['Remote (work in any timezone)'], []],
-    [['Chennai'], []],
+    [['Chennai'], ['india-other']],
+    [['Gurugram, Haryana'], ['india-other']],
+    [['Mumbai, Maharashtra, India'], ['india-other']],
+    [['India'], ['india-other']],
     [['Noida / Bengaluru'], ['bengaluru']],
+    [['Indianapolis, IN'], []],
+    [['San Francisco, CA'], []],
   ])('%j -> %j', (locs, expected) => {
     expect(matchCities(locs).sort()).toEqual([...expected].sort());
   });
@@ -29,9 +34,9 @@ describe('matchCities', () => {
   it('treats a bare "India" location as remote-india only when the ATS says remote', () => {
     // Seen live on Lever (Level AI): location "India", workplaceType "remote".
     expect(matchCities(['India'], true)).toEqual(['remote-india']);
-    expect(matchCities(['India'], false)).toEqual([]);
-    expect(matchCities(['India'], null)).toEqual([]);
-    expect(matchCities(['India', 'United States'], true)).toEqual([]);
+    expect(matchCities(['India'], false)).toEqual(['india-other']);
+    expect(matchCities(['India'], null)).toEqual(['india-other']);
+    expect(matchCities(['India', 'United States'], true)).toEqual(['india-other']);
   });
 });
 

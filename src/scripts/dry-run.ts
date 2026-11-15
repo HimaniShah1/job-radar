@@ -36,6 +36,6 @@ for (const { j, s } of shown) {
 }
 const passing = rows.filter((r) => !r.s.rejected);
 console.log(
-  `\n${rows.length} roles in target cities, ${passing.length} pass filters, ` +
+  `\n${rows.length} roles in India, ${passing.length} pass filters, ` +
     `${passing.filter((r) => r.s.score >= profile.toApplyThreshold).length} would land in To apply (score >= ${profile.toApplyThreshold}).`,
 );

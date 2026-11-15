@@ -159,6 +159,15 @@ describe('dashboard API', () => {
     expect(applied.map((r) => r.id)).toContain(id);
   });
 
+  it('filters hide only jobs you have not acted on (a posting can age past the limit after you apply)', async () => {
+    const id = await idOf('d'); // hard-filtered ("principal")
+    const visible = async (status: string) =>
+      ((await (await call('GET', `/api/jobs?status=${status}`)).json()) as Array<{ id: number }>).map((r) => r.id);
+    expect(await visible('maybe')).not.toContain(id);
+    await call('PATCH', `/api/jobs/${id}`, { status: 'applied' });
+    expect(await visible('applied')).toContain(id);
+  });
+
   it('serves description on demand and per-status counts', async () => {
     const detail = (await (await call('GET', `/api/jobs/${await idOf('a')}`)).json()) as { description: string };
     expect(detail.description).toContain('Node.js');

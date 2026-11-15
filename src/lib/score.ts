@@ -18,6 +18,10 @@ export function scoreJob(job: Job, profile: Profile, model: TitleModel | null = 
 
   // ---- hard filters
   if (!job.cities.some((c) => profile.cities.includes(c))) return reject('location not in target cities');
+  if (job.postedAt) {
+    const ageDays = Math.floor((now.getTime() - job.postedAt.getTime()) / 86_400_000);
+    if (ageDays > profile.maxPostingAgeDays) return reject(`posted ${ageDays} days ago`);
+  }
   const excluded = profile.titleExclude.find((w) => has(title, w));
   if (excluded) return reject(`title has "${excluded}"`);
   if (!profile.titleInclude.some((w) => has(title, w))) return reject('title is not an engineering role I target');
@@ -28,6 +32,11 @@ export function scoreJob(job: Job, profile: Profile, model: TitleModel | null = 
   // ---- soft scoring
   let score = 30;
   reasons.push('role match');
+
+  if (!job.cities.some((c) => profile.preferredCities.includes(c))) {
+    score -= profile.otherCityPenalty;
+    reasons.push(`-${profile.otherCityPenalty} outside preferred cities`);
+  }
 
   for (const [w, pts] of Object.entries(profile.titleBoost)) {
     if (has(title, w)) {

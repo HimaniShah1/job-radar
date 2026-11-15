@@ -47,8 +47,24 @@ describe('scoreJob with the real profile', () => {
     expect(s.rejected).toBe('needs 5+ yrs');
   });
 
-  it('rejects other cities', () => {
+  it('rejects locations outside India', () => {
     expect(scoreJob(job({ cities: [] }), profile, null, now).rejected).toMatch(/location/);
+  });
+
+  it('keeps other Indian cities but ranks them below the preferred ones', () => {
+    const preferred = scoreJob(job({ title: 'Backend Engineer' }), profile, null, now);
+    const elsewhere = scoreJob(job({ title: 'Backend Engineer', locations: ['Chennai'], cities: ['india-other'] }), profile, null, now);
+    expect(elsewhere.rejected).toBeNull();
+    expect(elsewhere.score).toBe(preferred.score - profile.otherCityPenalty);
+    expect(elsewhere.reasons.join(' ')).toMatch(/outside preferred cities/);
+  });
+
+  it('rejects postings older than maxPostingAgeDays, keeps undated ones', () => {
+    const old = new Date(now.getTime() - 240 * 86_400_000);
+    expect(scoreJob(job({ postedAt: old }), profile, null, now).rejected).toBe('posted 240 days ago');
+    const edge = new Date(now.getTime() - profile.maxPostingAgeDays * 86_400_000 + 3_600_000);
+    expect(scoreJob(job({ postedAt: edge }), profile, null, now).rejected).toBeNull();
+    expect(scoreJob(job({ postedAt: null }), profile, null, now).rejected).toBeNull();
   });
 
   it('scores "senior" below the plain title but does not reject it', () => {

@@ -1,5 +1,8 @@
 {
-  "cities": ["bengaluru", "hyderabad", "pune", "remote-india"],
+  "cities": ["bengaluru", "hyderabad", "pune", "remote-india", "india-other"],
+  "preferredCities": ["bengaluru", "hyderabad", "pune", "remote-india"],
+  "otherCityPenalty": 10,
+  "maxPostingAgeDays": 30,
   "yearsOfExperience": 2,
   "titleInclude": [
     "software engineer", "software developer", "software development engineer", "sde", "sde-1", "sde-2", "sde1", "sde2",

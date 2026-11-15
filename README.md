@@ -55,15 +55,15 @@ Tabs: **To apply** (score ≥ `toApplyThreshold`) · **Maybe** (passes the filte
 
 ## Make it yours
 
-- **`config/profile.json`**: cities, years of experience, title include/exclude words, skill weights, `toApplyThreshold`. Run `npm run dry-run -- --all` after a change to see which roles pass, which get rejected, and why.
+- **`config/profile.json`**: cities (`preferredCities` rank first; elsewhere in India loses `otherCityPenalty` points), how old a posting may be (`maxPostingAgeDays`), years of experience, title include/exclude words, skill weights, `toApplyThreshold`. Run `npm run dry-run -- --all` after a change to see which roles pass, which get rejected, and why.
 - **`config/companies.json`**: boards to poll. `npm run probe` checks every name in `config/candidates.txt` across five ATSs and prints lines to paste in. `npm run probe -- "Razorpay"` checks one company.
 - **Keka companies** (`"enabled": false` in the seed list): open the company's `*.keka.com/careers` page, open browser devtools → Network, find the `careers/api/jobs/<portal>/active` request, put `<portal>` in the `portal` field, set `enabled: true`, then `npm run dry-run -- --only "<Name>"` to confirm the parser handles the real response.
 
 ## How scoring works
 
-Hard filters reject: wrong city, excluded title words (manager, staff engineer, SDET, intern...), title not an engineering role, or experience minimum more than `yearsOfExperience + 2`.
+Hard filters reject: outside India, posted more than `maxPostingAgeDays` ago (30 by default; undated postings are kept), excluded title words (manager, staff engineer, SDET, intern...), title not an engineering role, or experience minimum more than `yearsOfExperience + 2`.
 
-Then the score adds up from a base of 30: title level (`SDE 2` +15, `senior` −15), experience fit (+20 if it fits), stack overlap (up to +30 for Node/TS/Postgres/AWS...), freshness (+10 if posted under 6h ago) and your feedback (±12 at most). Every row shows its reasons.
+Then the score adds up from a base of 30: outside your preferred cities (−10), title level (`SDE 2` +15, `senior` −15), experience fit (+20 if it fits), stack overlap (up to +30 for Node/TS/Postgres/AWS...), freshness (+10 if posted under 6h ago) and your feedback (±12 at most). Every row shows its reasons.
 
 **Learning:** after 10 or more 👍/👎 in the dashboard, a per-word log-odds model over job titles starts adjusting scores. It's intentionally small: with dozens of labels, anything bigger would just memorize them. It can nudge rankings but never overrides the hard filters.
 
@@ -79,6 +79,8 @@ npx wrangler d1 create job-radar          # copy the database_id it prints into 
 npm run db:migrate                        # creates the tables in the real D1
 npm run deploy                            # publishes the Worker; note its *.workers.dev URL
 ```
+
+When `d1 create` offers to add the database to your config, say **no**. Paste the id into the existing `DB` entry instead. Accepting adds a second entry with a different binding name, and `db:migrate` then fails with *database 00000000-… could not be found*.
 
 Until step 2 is done, the deployed dashboard answers every request with 503. That's on purpose: no Access config means nobody gets in.
 

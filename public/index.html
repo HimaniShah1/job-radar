@@ -123,7 +123,7 @@ const TABS = [
   ['done', 'Closed out', ['rejected', 'ghosted', 'skipped']],
   ['removed', 'Removed', ['removed']],
 ];
-const CITY = { bengaluru:'Bengaluru', hyderabad:'Hyderabad', pune:'Pune', 'remote-india':'Remote (India)' };
+const CITY = { bengaluru:'Bengaluru', hyderabad:'Hyderabad', pune:'Pune', 'remote-india':'Remote (India)', 'india-other':'Elsewhere in India' };
 const EMPTY = {
   to_apply: 'Nothing to apply to right now. New matches appear here after each poll.',
   maybe: 'No lower-scoring matches.',
@@ -213,7 +213,8 @@ function render() {
 
 function rowHtml(j) {
   const isNew = Date.now() - new Date(j.first_seen_at) < 24 * 3600_000;
-  const where = j.cities.map((c) => CITY[c] || c).join(', ');
+  // "Elsewhere in India" says little; show the posting's own location (e.g. "Chennai") instead.
+  const where = j.cities.includes('india-other') ? j.locations.slice(0, 2).join(' / ') : j.cities.map((c) => CITY[c] || c).join(', ');
   const options = Object.entries(STATUS_LABEL).map(([v, l]) => `<option value="${v}" ${v === j.status ? 'selected' : ''}>${l}</option>`).join('');
   return `<tr class="row" data-id="${j.id}">
     <td data-label="Company"><b>${esc(j.company)}</b></td>

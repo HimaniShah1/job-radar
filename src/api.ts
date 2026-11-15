@@ -6,8 +6,13 @@ import { Hono, type MiddlewareHandler } from 'hono';
 import { iso, type Db } from './db/types.js';
 import { STATUSES, type JobStatus } from './types.js';
 
-/** Before you act on these, a vanished posting is noise. After you've applied, it's still your pipeline. */
+/**
+ * Before you act on these, a vanished or filtered-out posting is noise. After you've acted on it,
+ * it's your pipeline: a job you applied to stays visible even once it ages past maxPostingAgeDays.
+ */
 const HIDE_CLOSED: JobStatus[] = ['to_apply', 'maybe'];
+const UNACTED = `('to_apply', 'maybe')`;
+const VISIBLE = `(rejected_reason is null or status not in ${UNACTED})`;
 const isStatus = (s: unknown): s is JobStatus => typeof s === 'string' && (STATUSES as readonly string[]).includes(s);
 
 type Env = { Variables: { db: Db } };
@@ -35,7 +40,7 @@ export function createApp<E extends object>(opts: { db: (env: E) => Db; auth?: M
     const includeClosed = c.req.query('includeClosed') === '1';
     const limit = Math.min(1000, Number(c.req.query('limit') ?? 500) || 500);
 
-    const where = ['rejected_reason is null'];
+    const where = [VISIBLE];
     const params: (string | number)[] = [];
     if (statuses.length) {
       params.push(JSON.stringify(statuses));
@@ -112,7 +117,7 @@ export function createApp<E extends object>(opts: { db: (env: E) => Db; auth?: M
         order by s.company`),
       c.var.db.all<{ status: string; n: number }>(`
         select status, count(*) as n from jobs
-        where rejected_reason is null and (closed_at is null or status not in ('to_apply', 'maybe'))
+        where ${VISIBLE} and (closed_at is null or status not in ${UNACTED})
         group by status`),
       c.var.db.all(
         `select (select count(*) from jobs where first_seen_at > ?1 and rejected_reason is null) as new_matches,

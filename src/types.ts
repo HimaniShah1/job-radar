@@ -1,12 +1,13 @@
 export type AtsKind = 'greenhouse' | 'lever' | 'ashby' | 'workable' | 'recruitee' | 'keka';
 
-/** Kept in sync with the jobs_status_check constraint in db/schema.sql. */
+/** Kept in sync with the status check constraint in migrations/0001_init.sql. */
 export const STATUSES = [
   'to_apply', 'maybe', 'applied', 'recruiter_call', 'oa', 'interviewing', 'offer', 'rejected', 'ghosted', 'skipped', 'removed',
 ] as const;
 export type JobStatus = (typeof STATUSES)[number];
 
-export type City = 'bengaluru' | 'hyderabad' | 'pune' | 'remote-india';
+/** 'india-other': anywhere else in India (Chennai, Gurugram, a bare "India"...). Outside India gets no city. */
+export type City = 'bengaluru' | 'hyderabad' | 'pune' | 'remote-india' | 'india-other';
 
 /** One company career board we poll. Lives in config/companies.json. */
 export interface CompanySource {
@@ -42,7 +43,13 @@ export interface Job extends RawJob {
 }
 
 export interface Profile {
+  /** Where a job may be. Anything else is rejected. */
   cities: City[];
+  /** Subset of `cities` you'd rather work in. Jobs only elsewhere lose `otherCityPenalty` points. */
+  preferredCities: City[];
+  otherCityPenalty: number;
+  /** Postings the ATS dates older than this are rejected. Undated postings are kept. */
+  maxPostingAgeDays: number;
   yearsOfExperience: number;
   /** A title must contain at least one of these to be considered. */
   titleInclude: string[];

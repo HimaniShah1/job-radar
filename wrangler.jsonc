@@ -9,21 +9,25 @@
     "directory": "public",
     "binding": "ASSETS",
     // The page goes through the Worker's Access check too, not just the API.
-    "run_worker_first": true
+    "run_worker_first": true,
   },
   "d1_databases": [
     {
+      // The code reads env.DB, so keep this binding name and keep exactly one entry:
+      // `wrangler d1 create` offers to append its own; put the id here instead.
       "binding": "DB",
       "database_name": "job-radar",
       // From `npx wrangler d1 create job-radar`. Not a secret.
-      "database_id": "00000000-0000-0000-0000-000000000000",
-      "migrations_dir": "migrations"
-    }
+      "database_id": "d91da556-c381-4859-99b2-aed8d562b444",
+      "migrations_dir": "migrations",
+    },
   ],
   "vars": {
     // Zero Trust > Settings > Custom pages shows your team domain; the AUD tag is on the Access application.
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": ""
+    "ACCESS_TEAM_DOMAIN": "theshiplog.cloudflareaccess.com",
+    "ACCESS_AUD": "06c882a5fd554708a412353beb4e5469d83accf1053a3b5bb9dffd4c7d6e1f39",
   },
-  "observability": { "enabled": true }
+  "observability": {
+    "enabled": true,
+  },
 }

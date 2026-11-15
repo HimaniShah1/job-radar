@@ -31,5 +31,10 @@ export function matchCities(locations: string[], remoteFlag: boolean | null = nu
   }
   // ATS says remote and every listed location is in India (e.g. "Bengaluru" + isRemote=true).
   if (remoteFlag === true && found.size > 0) found.add('remote-india');
+  // ATS says remote and the only location given is the country (Lever: "India" + workplaceType=remote).
+  const listed = locations.map((l) => l.trim()).filter(Boolean);
+  if (remoteFlag === true && listed.length > 0 && listed.every((l) => INDIA.test(l) && !OTHER_REGION.test(l))) {
+    found.add('remote-india');
+  }
   return [...found];
 }

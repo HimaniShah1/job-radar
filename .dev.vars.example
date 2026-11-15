@@ -1,0 +1,2 @@
+# Copy to .dev.vars for `npm run dev`. Skips the Access check, and only on localhost.
+DEV_NO_AUTH=1

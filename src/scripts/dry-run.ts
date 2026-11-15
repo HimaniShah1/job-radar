@@ -1,5 +1,5 @@
 /**
- * Fetch and score without a database or Telegram. Use it to check a new source
+ * Fetch and score without a database. Use it to check a new source
  * or tune profile.json:
  *   npm run dry-run                      # every enabled source
  *   npm run dry-run -- --only "Hevo Data" --all   # one source, include rejected roles
@@ -37,5 +37,5 @@ for (const { j, s } of shown) {
 const passing = rows.filter((r) => !r.s.rejected);
 console.log(
   `\n${rows.length} roles in target cities, ${passing.length} pass filters, ` +
-    `${passing.filter((r) => r.s.score >= profile.notifyThreshold).length} at or above notify threshold ${profile.notifyThreshold}.`,
+    `${passing.filter((r) => r.s.score >= profile.toApplyThreshold).length} would land in To apply (score >= ${profile.toApplyThreshold}).`,
 );

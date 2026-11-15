@@ -17,7 +17,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
  */
 export async function fetchJson<T = unknown>(
   url: string,
-  { timeoutMs = 15_000, retries = 2 }: { timeoutMs?: number; retries?: number } = {},
+  // Large Lever boards (Pattern, ~1.6 MB) take ~14s live; 15s timed out intermittently.
+  { timeoutMs = 30_000, retries = 2 }: { timeoutMs?: number; retries?: number } = {},
 ): Promise<T> {
   let lastErr: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {

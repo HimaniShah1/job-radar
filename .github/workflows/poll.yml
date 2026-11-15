@@ -1,0 +1,33 @@
+# Polls every board and writes to D1. Lives here, not in a Cloudflare Cron Trigger, because
+# a poll needs ~60 ms+ CPU and dozens of D1 calls; the Workers Free plan allows 10 ms and 50.
+#
+# Every 30 min: a private repo gets 2,000 free Actions minutes/month and each run bills
+# at least 1 minute, so 30 min (~1,440 min/month) fits and 20 min (~2,160) does not.
+# GitHub may start scheduled runs late when it's busy; that's fine for job alerts.
+name: poll
+on:
+  schedule:
+    - cron: '7,37 * * * *'   # off the hour: top-of-hour schedules are the most delayed
+  workflow_dispatch: {}
+
+concurrency:
+  group: poll
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --no-audit --no-fund
+      - run: npm run poll
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

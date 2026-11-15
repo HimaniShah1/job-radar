@@ -1,5 +1,5 @@
 [
-  { "name": "Postman", "ats": "greenhouse", "slug": "postman", "notes": "Bengaluru backend roles seen Nov 2026" },
+  { "name": "Postman", "ats": "greenhouse", "slug": "postman", "enabled": false, "notes": "Greenhouse board 404s (Nov 2026); Workable account exists but is empty; not on Lever/Ashby. Find the new careers source before re-enabling" },
   { "name": "HackerRank", "ats": "greenhouse", "slug": "hackerrank", "notes": "Bengaluru" },
   { "name": "Workato", "ats": "greenhouse", "slug": "workato", "notes": "Hyderabad SWE roles" },
   { "name": "CommerceIQ", "ats": "greenhouse", "slug": "commerceiq", "notes": "Bengaluru SDE-II roles" },
@@ -8,7 +8,7 @@
 
   { "name": "Hevo Data", "ats": "lever", "slug": "hevodata", "notes": "SDE-I backend Bengaluru, Pune" },
   { "name": "CRED", "ats": "lever", "slug": "cred", "notes": "Bengaluru, Hyderabad (Prefr)" },
-  { "name": "Fi (epiFi)", "ats": "lever", "slug": "epifi", "notes": "Bengaluru full-stack/backend" },
+  { "name": "Fi (epiFi)", "ats": "lever", "slug": "epifi", "enabled": false, "notes": "Lever board returns 0 jobs (Nov 2026). lever/fi is a different US company, not this one. Find new source" },
   { "name": "Netomi", "ats": "lever", "slug": "netomi", "notes": "SDE I/II backend, Remote India" },
   { "name": "Mindtickle", "ats": "lever", "slug": "mindtickle", "notes": "Pune, Bengaluru" },
   { "name": "Zuma", "ats": "lever", "slug": "getzuma", "notes": "Backend SDE-II Bengaluru, TypeScript" },

@@ -23,5 +23,5 @@
     "react": 4, "next.js": 3, "express": 4, "nestjs": 5, "aws": 4, "s3": 1, "ec2": 1, "supabase": 3, "stripe": 3,
     "rbac": 2, "redis": 3, "rest": 2, "microservices": 2, "docker": 2
   },
-  "notifyThreshold": 60
+  "toApplyThreshold": 60
 }

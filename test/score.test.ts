@@ -19,7 +19,7 @@ describe('scoreJob with the real profile', () => {
       postedAt: new Date('2026-11-14T03:00:00Z'),
     }), profile, null, now);
     expect(s.rejected).toBeNull();
-    expect(s.score).toBeGreaterThanOrEqual(profile.notifyThreshold);
+    expect(s.score).toBeGreaterThanOrEqual(profile.toApplyThreshold);
     expect(s.reasons.join(' ')).toMatch(/posted <6h ago/);
   });
 

@@ -1,5 +1,11 @@
 export type AtsKind = 'greenhouse' | 'lever' | 'ashby' | 'workable' | 'recruitee' | 'keka';
 
+/** Kept in sync with the jobs_status_check constraint in db/schema.sql. */
+export const STATUSES = [
+  'to_apply', 'maybe', 'applied', 'recruiter_call', 'oa', 'interviewing', 'offer', 'rejected', 'ghosted', 'skipped', 'removed',
+] as const;
+export type JobStatus = (typeof STATUSES)[number];
+
 export type City = 'bengaluru' | 'hyderabad' | 'pune' | 'remote-india';
 
 /** One company career board we poll. Lives in config/companies.json. */
@@ -48,8 +54,8 @@ export interface Profile {
   titleBoost: Record<string, number>;
   /** Skill keyword -> weight, matched against title + description. */
   skills: Record<string, number>;
-  /** Notify only at or above this score. */
-  notifyThreshold: number;
+  /** Jobs at or above this score land in "To apply"; lower ones that pass the filters go to "Maybe". */
+  toApplyThreshold: number;
 }
 
 export interface ScoreResult {

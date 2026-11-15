@@ -20,7 +20,7 @@ async function probe(name: string) {
     for (const slug of slugGuesses(name)) {
       const src: CompanySource = { name, ats, slug };
       try {
-        const body = await fetchJson(adapters[ats].url(src), { retries: 0, timeoutMs: 8000 });
+        const body = await fetchJson(adapters[ats].url(src), { retries: 0, timeoutMs: 20_000 });
         const jobs = adapters[ats].parse(body, src);
         if (jobs.length === 0 && ats !== 'greenhouse') continue; // empty lever/workable responses are often "no such board"
         const india = jobs.map((j) => toJob(j, src)).filter((j) => j.cities.length > 0).length;

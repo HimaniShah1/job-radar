@@ -26,6 +26,13 @@ describe('matchCities', () => {
   it('adds remote-india when the ATS flags an Indian-city role as remote', () => {
     expect(matchCities(['Bengaluru'], true).sort()).toEqual(['bengaluru', 'remote-india']);
   });
+  it('treats a bare "India" location as remote-india only when the ATS says remote', () => {
+    // Seen live on Lever (Level AI): location "India", workplaceType "remote".
+    expect(matchCities(['India'], true)).toEqual(['remote-india']);
+    expect(matchCities(['India'], false)).toEqual([]);
+    expect(matchCities(['India'], null)).toEqual([]);
+    expect(matchCities(['India', 'United States'], true)).toEqual([]);
+  });
 });
 
 describe('parseYears', () => {

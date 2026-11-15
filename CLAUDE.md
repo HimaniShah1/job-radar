@@ -38,7 +38,7 @@ Run `npm test && npm run typecheck` before calling any change done.
 - New matches land as `to_apply` (score >= `toApplyThreshold`) or `maybe`. Polling never overwrites a status she set; the only automatic move is maybe -> to_apply on rescore.
 - "Remove" sets status `removed`, never a hard delete: a deleted row would be re-inserted as new by the next poll.
 - Never commit `.env`, `.dev.vars` or tokens. The deployed dashboard must stay behind Cloudflare Access; never set `DEV_NO_AUTH` outside `.dev.vars`.
-- Keep this repo private until she has an offer: a public job-search tool signals to her employer that she is looking.
+- The repo is public by her choice (Nov 2026). Never commit secrets, tokens or personal data beyond what is already in `config/`.
 
 ## Conventions
 - New ATS adapter: add it to `adapters/index.ts`, add a fixture and a test in `test/adapters.test.ts`, then add real boards to `companies.json`.

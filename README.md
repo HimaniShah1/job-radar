@@ -69,7 +69,7 @@ Then the score adds up from a base of 30: title level (`SDE 2` +15, `senior` −
 
 ## Deploy to Cloudflare
 
-One-time setup, about 15 minutes. You need a free Cloudflare account and this repo on GitHub (private).
+One-time setup, about 15 minutes. You need a free Cloudflare account and this repo on GitHub.
 
 **1. Database and Worker**
 
